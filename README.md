@@ -1,7 +1,9 @@
+[![Travis CI Build Status](https://travis-ci.org/skodnik/sberbank-api.svg?branch=main)](https://travis-ci.org/skodnik/sberbank-api)
+
 # Работа с билетами в рамках программы «Пушкинская карта»
 API для передачи информации в реестр сведений о билетах - [docs.culture.ru/tickets](https://docs.culture.ru/tickets/)
 
-Официальная документация - [https://docs.culture.ru/documents](https://docs.culture.ru/documents)
+Официальная документация - [docs.culture.ru/documents](https://docs.culture.ru/documents)
 
 ## Требования
 - php 8.1 и выше
@@ -74,18 +76,13 @@ try {
 | **eventsEventIdTicketsBarcodeGet**      | **GET** /events/{event_id}/tickets/{barcode}       | Получение информации о сеансе по билету |
 | **eventsEventIdTicketsBarcodeVisitPut** | **PUT** /events/{event_id}/tickets/{barcode}/visit | Погасить билет                          |
 
-## Установка в окружении разработчика
-```bash
-composer install
-```
-
 ## Тесты
-Создать и настроить переменные окружения в файле `phpunit.xml`. `EVENT_ID` и `ORGANIZATION_ID` запросить в службе поддержки [https://docs.culture.ru/](https://docs.culture.ru/).
+Создать и настроить переменные окружения в файле `phpunit.xml`. `EVENT_ID`, `ORGANIZATION_ID`, `ACCESS_TOKEN`, `UAT_HOST` запросить в службе поддержки [docs.culture.ru/](https://docs.culture.ru/).
 ```bash
 cp phpunit.xml.dist phpunit.xml
 ```
 
-### Запуск тестов.
+### Запуск тестов
 Все группы.
 ```bash
 composer tests
