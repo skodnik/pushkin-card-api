@@ -1,4 +1,4 @@
-[![Travis CI Build Status](https://travis-ci.org/skodnik/sberbank-api.svg?branch=main)](https://travis-ci.org/skodnik/sberbank-api)
+![phpunit tests](https://github.com/skodnik/pushkin-card-api/actions/workflows/php.yml/badge.svg)
 
 # Работа с билетами в рамках программы «Пушкинская карта»
 API для передачи информации в реестр сведений о билетах - [docs.culture.ru/tickets](https://docs.culture.ru/tickets/)
