@@ -1,4 +1,4 @@
-name: phpunit tests
+name: phpunit, cs-fixer tests
 
 on:
   push:
@@ -32,8 +32,8 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-      # Docs: https://getcomposer.org/doc/articles/scripts.md
-
-      - name: Run test suite
+      - name: Run phpunit test suite
         run: composer tests-unit
+
+      - name: Run pint test suite
+        run: composer pint-test
