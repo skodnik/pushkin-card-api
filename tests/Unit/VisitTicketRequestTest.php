@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsv\PushkinCardApi\Tests\Unit;;
+namespace Vlsv\PushkinCardApi\Tests\Unit;
 
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;

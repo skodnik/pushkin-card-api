@@ -8,7 +8,6 @@ use Vlsv\PushkinCardApi\Exception\ApiException;
 use Vlsv\PushkinCardApi\Model\Buyer;
 use Vlsv\PushkinCardApi\Model\ErrorResponse;
 use Vlsv\PushkinCardApi\Model\Payment;
-use Vlsv\PushkinCardApi\Model\RefundResult;
 use Vlsv\PushkinCardApi\Model\Session;
 use Vlsv\PushkinCardApi\Model\Ticket;
 use Vlsv\PushkinCardApi\Model\TicketInfo;
