@@ -76,6 +76,8 @@ try {
 | **eventsEventIdTicketsBarcodeGet**      | **GET** /events/{event_id}/tickets/{barcode}       | Получение информации о сеансе по билету |
 | **eventsEventIdTicketsBarcodeVisitPut** | **PUT** /events/{event_id}/tickets/{barcode}/visit | Погасить билет                          |
 
+Спецификация - [tickets](specs/tickets.yaml). Актуальная спецификация - [docs.culture.ru/tickets](https://docs.culture.ru/tickets/).
+
 ## Тесты
 Создать и настроить переменные окружения в файле `phpunit.xml`. `EVENT_ID`, `ORGANIZATION_ID`, `ACCESS_TOKEN`, `UAT_HOST` запросить в службе поддержки [docs.culture.ru/](https://docs.culture.ru/).
 ```bash

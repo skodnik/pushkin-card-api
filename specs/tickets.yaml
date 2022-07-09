@@ -1,0 +1,672 @@
+openapi: 3.0.0
+info:
+  title: 'Работа с билетами'
+  description: 'API для передачи информации в реестр сведений о билетах'
+  version: '0.1.5'
+servers:
+  - description: UAT
+    url: https://pushka-uat.test.gosuslugi.ru/api/v1
+  - description: PROD
+    url: https://pushka.gosuslugi.ru/api/v1/
+paths:
+  '/tickets':
+    post:
+      summary: Добавление билета в реестр
+      description: Добавить в реестр информацию о билете, купленном по Пушкинской карте
+      tags: [ Продавцы билетов ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  '/tickets/{id}':
+    get:
+      summary: Получение информации о билете
+      description: Запросить билет по ID
+      tags: [ Продавцы билетов ]
+      parameters:
+        - name: id
+          in: path
+          description: ID билета
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  '/tickets/{id}/refund':
+    put:
+      summary: Вернуть билет
+      description: Добавить информацию о возврате билета
+      tags: [ Продавцы билетов ]
+      parameters:
+        - name: id
+          in: path
+          description: ID билета
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundTicketRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  '/tickets/{id}/visit':
+    put:
+      summary: Погасить билет
+      description: Добавить в билет информацию о посещении
+      tags: [ Продавцы билетов ]
+      parameters:
+        - name: id
+          in: path
+          description: ID билета
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitTicketRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VisitResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  '/events/{event_id}/tickets/{barcode}':
+    get:
+      summary: Получение информации о сеансе по билету
+      description: Получение информации о сеансе по QR и ID события
+      tags: [ Контролёры билетов ]
+      parameters:
+        - name: event_id
+          in: path
+          description: ID мероприятия в ПРО.Культура
+          required: true
+          schema:
+            type: string
+        - name: barcode
+          in: path
+          required: true
+          description: ШК билета
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketInfo'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  '/events/{event_id}/tickets/{barcode}/visit':
+    put:
+      summary: Погасить билет
+      description: Добавить в билет информацию о посещении
+      tags: [ Контролёры билетов ]
+      parameters:
+        - name: event_id
+          in: path
+          description: ID мероприятия в ПРО.Культура
+          required: true
+          schema:
+            type: string
+        - name: barcode
+          in: path
+          required: true
+          description: ШК билета
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitTicketRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VisitResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    CreateTicketRequest:
+      type: object
+      properties:
+        barcode:
+          type: string
+          description: ШК билета (QR-код)
+        barcode_type:
+          type: string
+          description: тип ШК билета
+        visitor:
+          $ref: '#/components/schemas/Visitor'
+        buyer:
+          $ref: '#/components/schemas/Buyer'
+        session:
+          $ref: '#/components/schemas/Session'
+        payment:
+          $ref: '#/components/schemas/Payment'
+        comment:
+          type: string
+          description: Комментарий (для билета)
+      required:
+        - barcode
+        - visitor
+        - buyer
+        - session
+        - payment
+
+    NewCreateTicketRequest:
+      type: object
+      properties:
+        barcode:
+          type: string
+          description: ШК билета (QR-код)
+        barcode_type:
+          type: string
+          description: тип ШК билета
+        visitor:
+          $ref: '#/components/schemas/Visitor'
+        buyer:
+          $ref: '#/components/schemas/Buyer'
+        session:
+          $ref: '#/components/schemas/Session'
+        payment:
+          $ref: '#/components/schemas/Payment'
+        comment:
+          type: string
+          description: Комментарий (для билета)
+      required:
+        - barcode
+        - visitor
+        - buyer
+        - session
+        - payment
+
+    RefundTicketRequest:
+      type: object
+      properties:
+        refund_date:
+          type: integer
+          description: Дата возврата билета (unix timestamp)
+        refund_reason:
+          type: string
+          description: Причина возврата
+        refund_rrn:
+          type: string
+          description: RRN (Retrieval Reference Number) - уникальный идентификатор транзакции возврата
+        refund_ticket_price:
+          type: string
+          description: Сумма возврата
+        comment:
+          type: string
+          description: Комментарий
+      required:
+        - refund_date
+        - refund_reason
+
+    VisitTicketRequest:
+      type: object
+      properties:
+        visit_date:
+          type: integer
+          description: Дата посещения (гашения) (unix timestamp)
+        comment:
+          type: string
+          description: Комментарий
+      required:
+        - visit_date
+
+    Buyer:
+      type: object
+      description: Участник программы
+      properties:
+        mobile_phone:
+          type: string
+          description: Мобильный телефон (10 цифр)
+      required:
+        - mobile_phone
+
+    Visitor:
+      type: object
+      description: Посетитель мероприятия
+      properties:
+        full_name:
+          description: ФИО (целиком)
+          type: string
+        first_name:
+          description: Имя
+          type: string
+        middle_name:
+          description: Отчество
+          type: string
+        last_name:
+          description: Фамилия
+          type: string
+      required:
+        - full_name
+
+    Session:
+      type: object
+      description: Сеанс
+      properties:
+        event_id:
+          type: string
+          description: ID мероприятия в PRO.Культура
+        organization_id:
+          type: string
+          description: ID организации в Про.Культура
+        date:
+          type: integer
+          description: Дата/Время проведения сеанса (unix timestamp)
+        place:
+          type: string
+          description: Адрес/описание места проведения мероприятия
+        params:
+          type: string
+          description: Зал+Сектор+Ряд+Место
+      required:
+        - event_id
+        - organization_id
+        - date
+        - ticket_price
+
+    Payment:
+      type: object
+      description: Платеж
+      properties:
+        id:
+          type: string
+          description: ID платежа у Билетного оператора
+        rrn:
+          type: string
+          description: RRN (Retrieval Reference Number) - уникальный идентификатор транзакции
+        date:
+          type: integer
+          description: Дата/время совершения платежа (unix timestamp)
+        ticket_price:
+          type: string
+          description: Цена билета (номинал)
+        amount:
+          type: string
+          description: Сумма платежа по Пушкинской карте
+      required:
+        - date
+        - amount
+
+    NewTicket:
+      type: object
+      description: Купленный билет
+      properties:
+        id:
+          type: string
+          description: ID билета
+        barcode:
+          type: string
+          description: ШК билета (QR-код)
+        barcode_type:
+          type: string
+          description: тип ШК билета
+        status:
+          $ref: '#/components/schemas/Status'
+        visitor:
+          $ref: '#/components/schemas/Visitor'
+        buyer:
+          $ref: '#/components/schemas/Buyer'
+        session:
+          $ref: '#/components/schemas/Session'
+        payment:
+          $ref: '#/components/schemas/Payment'
+        visit_date:
+          type: integer
+          description: Дата посещения (гашения) (unix timestamp)
+        refund_date:
+          type: integer
+          description: Дата возврата билета (unix timestamp)
+        refund_reason:
+          type: string
+          description: Причина возврата
+        refund_rrn:
+          type: string
+          description: RRN (Retrieval Reference Number) - уникальный идентификатор транзакции возврата
+        refund_ticket_price:
+          type: string
+          description: Сумма возврата
+        comment:
+          type: string
+          description: Комментарий (для билета)
+      required:
+        - id
+        - barcode
+        - status
+        - visitor
+        - buyer
+        - session
+        - payment
+
+    Ticket:
+      type: object
+      description: Купленный билет
+      properties:
+        id:
+          type: string
+          description: ID билета
+        barcode:
+          type: string
+          description: ШК билета (QR-код)
+        status:
+          $ref: '#/components/schemas/Status'
+        visitor:
+          $ref: '#/components/schemas/Visitor'
+        buyer:
+          $ref: '#/components/schemas/Buyer'
+        session:
+          $ref: '#/components/schemas/Session'
+        payment:
+          $ref: '#/components/schemas/Payment'
+        visit_date:
+          type: integer
+          description: Дата посещения (гашения) (unix timestamp)
+        refund_date:
+          type: integer
+          description: Дата возврата билета (unix timestamp)
+        refund_reason:
+          type: string
+          description: Причина возврата
+        refund_rrn:
+          type: string
+          description: RRN (Retrieval Reference Number) - уникальный идентификатор транзакции возврата
+        refund_ticket_price:
+          type: string
+          description: Сумма возврата
+        comment:
+          type: string
+          description: Комментарий (для билета)
+      required:
+        - id
+        - barcode
+        - status
+        - visitor
+        - buyer
+        - session
+        - payment
+
+    Status:
+      type: string
+      enum:
+        - active
+        - visited
+        - refunded
+        - canceled
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Код ошибки
+        description:
+          type: string
+          description: Описание ошибки
+      required:
+        - code
+        - description
+
+    RefundResult:
+      type: object
+      description: Купленный билет
+      properties:
+        refund_date:
+          type: integer
+          description: Дата возврата билета (unix timestamp)
+        refund_reason:
+          type: string
+          description: Причина возврата
+        refund_rrn:
+          type: string
+          description: RRN (Retrieval Reference Number) - уникальный идентификатор транзакции возврата
+        refund_ticket_price:
+          type: string
+          description: Сумма возврата
+        status:
+          $ref: '#/components/schemas/Status'
+      required:
+        - refund_date
+        - refund_reason
+        - status
+
+    VisitResult:
+      type: object
+      description: Купленный билет
+      properties:
+        visit_date:
+          type: integer
+          description: Дата погашения билета (unix timestamp)
+        status:
+          $ref: '#/components/schemas/Status'
+      required:
+        - visit_date
+        - status
+
+    TicketInfo:
+      type: object
+      description: Информация о билете для билетных систем
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+        session:
+          $ref: '#/components/schemas/Session'
+
+    ControllerRequest:
+      type: object
+      properties:
+        esia_id:
+          type: string
+          description: ESIA ID
+        type:
+          type: string
+          description: Тип нарушения
+        description:
+          type: string
+          description: Описание нарушения
+
+    ControllerResponce:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор записи
+        esia_id:
+          type: string
+          description: ESIA ID
+        ins_date:
+          type: integer
+          description: Дата внесения записи о нарушении (unix timestamp)
+        type:
+          type: string
+          description: Тип нарушения
+        description:
+          type: string
+          description: Описание нарушения
+
+    Organization:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Токен
+        active:
+          type: boolean
+          description: Статус активности
+        owner:
+          type: string
+          description: ИНН
+        owner_name:
+          type: string
+          description: Наименование организации
+
+    Event:
+      type: object
+      description: Мероприятие
+      properties:
+        _id:
+          type: integer
+        name:
+          type: string
+        ageRestriction:
+          type: integer
+        description:
+          type: string
+        shortDescription:
+          type: string
+        status:
+          type: string
+        photo:
+          type: string
+        gallery:
+          type: array
+          items:
+            type: string
+        category:
+          type: string
+        min_price:
+          type: string
+          description: Минимальная цена билета
+        max_price:
+          type: string
+          description: Минимальная цена билета
+        time:
+          $ref: '#/components/schemas/Time'
+        link:
+          type: string
+          description: Ссылка
+        place:
+          $ref: '#/components/schemas/Place'
+
+    Time:
+      type: object
+      description: Время
+      properties:
+        from:
+          type: string
+          description: Начало
+        to:
+          type: string
+          description: Окончание
+    Place:
+      type: object
+      description: Место события
+      properties:
+        name:
+          type: string
+          description: Наименования места события
+        address:
+          type: string
+          description: Адрес места события
+        mapPosition:
+          type: array
+          items:
+            type: number
+        working:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingDay'
+
+    WorkingDay:
+      type: object
+      properties:
+        weekday:
+          type: string
+        from:
+          type: string
+        to:
+          type: string
+
+    AddressItem:
+      type: object
+      properties:
+        name:
+          type: string
+        fiasId:
+          type: string
+        type:
+          type: string
+        isPostfix:
+          type: boolean
+      required:
+        - name
+
+security:
+  - bearerAuth: [ ]
