@@ -44,7 +44,7 @@
         "csfix-dry": "vendor/bin/php-cs-fixer fix --allow-risky=yes --dry-run --verbose",
         "csfix-fix": "vendor/bin/php-cs-fixer fix --allow-risky=yes --verbose",
         "pint-test": "./vendor/bin/pint --test --verbose",
-        "pint-fix": "./vendor/bin/pint --test --verbose"
+        "pint-fix": "./vendor/bin/pint --verbose"
     },
     "minimum-stability": "stable"
 }
