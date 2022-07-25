@@ -122,9 +122,9 @@ class ApiClient
      */
     public function redeemTicketInfoByTicketId(
         VisitTicketRequest $visitTicketRequest,
-        Ticket $ticket,
+        string $ticketId,
     ): ErrorResponse|VisitResult {
-        $resourcePath = '/tickets/' . rawurlencode($ticket->getId()) . '/visit';
+        $resourcePath = '/tickets/' . rawurlencode($ticketId) . '/visit';
         $request = new Request('PUT', $this->config->getHost() . $resourcePath);
 
         try {

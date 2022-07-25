@@ -119,7 +119,7 @@ class ApiSellersTest extends IntegrationTestCase
     {
         $visitResult = $this->client->redeemTicketInfoByTicketId(
             visitTicketRequest: parent::getVisitTicketRequest(),
-            ticket: $ticket
+            ticketId: $ticket->getId()
         );
 
         self::assertInstanceOf(VisitResult::class, $visitResult);
